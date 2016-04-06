@@ -168,8 +168,7 @@ cw_Car.prototype.__constructor = function(car_def) {
     torque[i] = carmass * -gravity.y  * car_def.engineSize / car_def.wheel_radius[i] * defaultEngineSize;
   }
 
-
-  this.healthBarText.innerHTML = car_def.index + ": " + Math.floor(car_def.engineSize)+ "Hp, " + Math.floor(carmass) + "kg.";
+  this.healthBarText.innerHTML = car_def.index + ": " + Math.floor(car_def.engineSize)+ "Hp, " + Math.floor(carmass) + "kg. Race: " + car_def.race_count;
 
   var joint_def = new b2RevoluteJointDef();
 
@@ -312,6 +311,7 @@ function cw_createRandomCar() {
   var v = [];
   var car_def = new Object();
 
+  car_def.race_count = 0;
   car_def.wheelCount = 2;
 
   car_def.wheel_radius = [];
@@ -388,6 +388,7 @@ function cw_nextGeneration() {
   for(var k = 0; k < gen_champions; k++) {
     cw_carScores[k].car_def.is_elite = true;
     cw_carScores[k].car_def.index = k;
+    cw_carScores[k].car_def.race_count += 1;
     newGeneration.push(cw_carScores[k].car_def);
   }
   for(k = gen_champions; k < generationSize; k++) {
@@ -401,6 +402,7 @@ function cw_nextGeneration() {
     newborn = cw_mutate(newborn);
     newborn.is_elite = false;
     newborn.index = k;
+    newborn.race_count = 0;
     newGeneration.push(newborn);
   }
   cw_carScores = new Array();
