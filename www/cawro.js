@@ -165,8 +165,12 @@ cw_Car.prototype.__constructor = function(car_def) {
 
   var torque = [];
   for (var i = 0; i < car_def.wheelCount; i++){
-    torque[i] = (car_def.engineSize * -gravity.y) / car_def.wheel_radius[i]
+    // torque[i] = (car_def.engineSize * -gravity.y) / (car_def.wheel_radius[i]);
+
+    torque[i] = (Math.pow(car_def.engineSize, 2) * (1 + car_def.wheel_radius[i]) * 100) / (carmass * -gravity.y)
+
     // torque[i] = (carmass * -gravity.y) / (car_def.wheel_radius[i] * defaultEngineSize);
+
   }
 
   this.healthBarText.innerHTML = car_def.index + ": " + Math.floor(car_def.engineSize)+ "Hp, " + Math.floor(carmass) + "kg. Race: " + car_def.race_count + " - " + Math.floor(torque[0]) + ", " + Math.floor(torque[1]);
