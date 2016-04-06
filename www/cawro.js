@@ -161,14 +161,15 @@ cw_Car.prototype.__constructor = function(car_def) {
     carmass += this.wheels[i].GetMass();
   }
 
-  carmass += car_def.engineSize - defaultEngineSize;
+  carmass += car_def.engineSize;
 
   var torque = [];
   for (var i = 0; i < car_def.wheelCount; i++){
-    torque[i] = carmass * -gravity.y  * car_def.engineSize / car_def.wheel_radius[i] * defaultEngineSize;
+    torque[i] = (car_def.engineSize * -gravity.y) / car_def.wheel_radius[i]
+    // torque[i] = (carmass * -gravity.y) / (car_def.wheel_radius[i] * defaultEngineSize);
   }
 
-  this.healthBarText.innerHTML = car_def.index + ": " + Math.floor(car_def.engineSize)+ "Hp, " + Math.floor(carmass) + "kg. Race: " + car_def.race_count;
+  this.healthBarText.innerHTML = car_def.index + ": " + Math.floor(car_def.engineSize)+ "Hp, " + Math.floor(carmass) + "kg. Race: " + car_def.race_count + " - " + Math.floor(torque[0]) + ", " + Math.floor(torque[1]);
 
   var joint_def = new b2RevoluteJointDef();
 
@@ -225,12 +226,15 @@ cw_Car.prototype.checkDeath = function() {
   // check if car reached end of the path
   if(position.x > world.finishLine) {
       this.healthBar.width = "0";
+      this.maxPosition = world.finishLine;
+      // this.chassis.position.x = world.finishLine;
+      // this.chassis.position.y = world.finishLine;
       return true;
   }
   if(position.y > this.maxPositiony) {
     this.maxPositiony = position.y;
   }
-  if(position .y < this.minPositiony) {
+  if(position.y < this.minPositiony) {
     this.minPositiony = position.y;
   }
   if(position.x > this.maxPosition + 0.02) {
