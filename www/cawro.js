@@ -80,9 +80,9 @@ var car_health = max_car_health;
 
 var motorSpeed = 20;
 
-var engineSizeMaxAxis = 100;
-var engineSizeMinAxis = 1;
-var defaultEngineSize = 10;
+var engineSizeMaxAxis = 30;
+var engineSizeMinAxis = 10;
+var defaultEngineSize = 20;
 
 
 var swapPoint1 = 0;
@@ -161,15 +161,14 @@ cw_Car.prototype.__constructor = function(car_def) {
     carmass += this.wheels[i].GetMass();
   }
 
-  carmass += car_def.engineSize;
+  carmass += car_def.engineSize * 2;
 
   var torque = [];
   for (var i = 0; i < car_def.wheelCount; i++){
     // torque[i] = (car_def.engineSize * -gravity.y) / (car_def.wheel_radius[i]);
 
-    torque[i] = (Math.pow(car_def.engineSize, 2) * (1 + car_def.wheel_radius[i]) * 100) / (carmass * -gravity.y)
-
-    // torque[i] = (carmass * -gravity.y) / (car_def.wheel_radius[i] * defaultEngineSize);
+    // torque[i] = (Math.pow(car_def.engineSize, 2) * this.wheels[i].GetMass()*-gravity.y) / (car_def.wheel_radius[i] * (carmass*-gravity.y));
+    torque[i] = (carmass) / (car_def.wheel_radius[i]*(car_def.engineSize/defaultEngineSize));
 
   }
 
@@ -182,7 +181,7 @@ cw_Car.prototype.__constructor = function(car_def) {
     joint_def.localAnchorA.Set(randvertex.x, randvertex.y);
     joint_def.localAnchorB.Set(0, 0);
     joint_def.maxMotorTorque = torque[i];
-    joint_def.motorSpeed = -motorSpeed;
+    joint_def.motorSpeed = -car_def.engineSize;
     joint_def.enableMotor = true;
     joint_def.bodyA = this.chassis;
     joint_def.bodyB = this.wheels[i];
@@ -569,7 +568,9 @@ function cw_mutate(car_def) {
   }
 
   if (Math.random() < gen_mutation) {
+    var old = car_def.engineSize;
     car_def.engineSize = cw_mutate1(car_def.engineSize, engineSizeMinAxis, engineSizeMaxAxis);
+    console.log('new engine', old, car_def.engineSize)
   }
 
   cw_mutatev(car_def, 0, 1, 0);
